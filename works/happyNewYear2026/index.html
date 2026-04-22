@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>2026 新年快乐</title>
+    <!-- 引入不蒜子计数脚本 -->
+    <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script>
+    <!-- 引入CSS文件 -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <svg style="display: none">
+      <defs>
+        <filter id="crayon-texture">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.03"
+            numOctaves="3"
+            result="noise"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale="5"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </defs>
+    </svg>
+
+    <div id="firework-canvas" class="crayon-effect"></div>
+
+    <div class="container">
+      <div class="big-text crayon-effect">新年</div>
+      <div class="year-sticker crayon-effect">2026</div>
+      <div class="big-text crayon-effect">快乐</div>
+      <div class="footer-en crayon-effect">HAPPY NEW YEAR</div>
+
+      <div class="hint-text">👇 点击屏幕绽放烟花 👇</div>
+    </div>
+
+    <!-- 底部固定信息 -->
+    <div class="footer-fixed">
+      <div class="signature">Made by Chengxue Han, 2025.12.31</div>
+
+      <!-- 浏览量统计容器 -->
+      <div
+        class="visit-count"
+        id="busuanzi_container_site_pv"
+        style="display: none"
+      >
+        🎆 烟花点亮人数: <span id="busuanzi_value_site_pv"></span>
+      </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="JavaScript/script.js"></script>
+  </body>
+</html>

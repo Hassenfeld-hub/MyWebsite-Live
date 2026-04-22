@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Zh-Cns on Hassenfeld</title>
+    <link>http://localhost:1313/zh-cn/</link>
+    <description>Recent content in Zh-Cns on Hassenfeld</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <managingEditor>chengxue.han654@gmail.com (Hassenfeld)</managingEditor>
+    <webMaster>chengxue.han654@gmail.com (Hassenfeld)</webMaster>
+    <copyright>© 2026 **Hassenfeld**. All rights reserved.</copyright>
+    <atom:link href="http://localhost:1313/zh-cn/index.xml" rel="self" type="application/rss+xml" />
+    
+  </channel>
+</rss>

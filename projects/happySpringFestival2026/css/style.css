@@ -1,0 +1,524 @@
+/* ========== 全局变量与重置 ========== */
+:root {
+  --paper-color: #f4e8d1;
+  --ink-red: #9c1a1a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 页面基础样式 */
+body,
+html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--paper-color);
+  background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+  font-family: "Ma Shan Zheng", cursive;
+}
+
+/* ========== 视图切换动画 ========== */
+.view {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.view.hidden {
+  opacity: 0;
+  transform: scale(1.05);
+  pointer-events: none;
+}
+.view.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ========== 首页布局 ========== */
+.main-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ========== 书法容器与文字 ========== */
+.calligraphy-box {
+  position: relative;
+  width: 320px;
+  height: 500px;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+/* 激活视图层级 */
+.view.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 50;
+}
+
+/* 交互元素启用点击 */
+.wish-button,
+.back-btn,
+.write-btn,
+.modal {
+  pointer-events: auto !important;
+}
+
+/* ========== 书法文字样式 ========== */
+.char {
+  position: absolute;
+  font-size: clamp(7.5rem, 21vw, 10.5rem);
+  color: var(--ink-red);
+  line-height: 1;
+  text-shadow:
+    2px 2px 0px rgba(0, 0, 0, 0.03),
+    0 0 15px rgba(178, 34, 34, 0.1);
+}
+.char-xin {
+  top: -20px;
+  right: 20px;
+  z-index: 4;
+}
+.char-chun {
+  top: 120px;
+  right: 0px;
+  z-index: 2;
+}
+.char-kuai {
+  top: 180px;
+  left: 40px;
+  z-index: 3;
+}
+.char-le {
+  bottom: 0;
+  left: 60%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* ========== 印章样式 ========== */
+.seal-container {
+  position: absolute;
+  left: -15px;
+  top: 245px;
+  width: 45px;
+  height: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 6;
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1));
+}
+.seal-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--ink-red);
+  filter: url(#roughness);
+}
+.seal-text {
+  position: relative;
+  color: var(--paper-color);
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  line-height: 1.1;
+  padding-top: 2px;
+}
+
+/* ========== 按钮样式 ========== */
+.wish-button {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 32px;
+  font-family: "Ma Shan Zheng", cursive;
+  font-size: 1.4rem;
+  color: var(--paper-color);
+  background: linear-gradient(135deg, #b22222 0%, #a01010 100%);
+  border: 4px solid #8b0000;
+  cursor: pointer;
+  z-index: 100;
+  letter-spacing: 6px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  clip-path: polygon(
+    0 8px,
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    8px 100%,
+    0 calc(100% - 8px)
+  );
+  pointer-events: auto;
+}
+
+.wish-button:hover {
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* ========== 许愿墙样式 ========== */
+.wall-header {
+  width: 90%;
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 20;
+}
+.wall-title {
+  font-size: 2.5rem;
+  color: var(--ink-red);
+}
+.back-btn {
+  background: none;
+  border: 1px solid var(--ink-red);
+  color: var(--ink-red);
+  padding: 5px 15px;
+  cursor: pointer;
+  font-family: "Ma Shan Zheng";
+  transition: all 0.3s ease;
+  pointer-events: auto;
+}
+
+.back-btn:hover {
+  background: var(--ink-red);
+  color: var(--paper-color);
+}
+
+#message-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  width: 90%;
+  height: 60vh;
+  overflow-y: auto;
+  margin-top: 20px;
+  padding: 10px;
+  z-index: 20;
+}
+.message-card {
+  background: #d32f2f;
+  color: var(--paper-color);
+  aspect-ratio: 1/1;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
+  background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
+}
+.write-btn {
+  margin-top: 20px;
+  padding: 10px 30px;
+  background: var(--ink-red);
+  color: white;
+  border: none;
+  font-family: "Ma Shan Zheng";
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+}
+
+.write-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== 模态弹窗样式 ========== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+.modal-content {
+  background: var(--paper-color);
+  padding: 25px;
+  width: 85%;
+  max-width: 350px;
+  border: 2px solid var(--ink-red);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.modal-content textarea,
+.modal-content input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  font-family: "Ma Shan Zheng";
+  font-size: 1.1rem;
+}
+.anon-label {
+  font-family: "Ma Shan Zheng";
+  color: var(--ink-red);
+  font-size: 1rem;
+}
+.modal-btns button {
+  padding: 8px 20px;
+  font-family: "Ma Shan Zheng";
+  cursor: pointer;
+  border: none;
+}
+.modal-btns button:first-child {
+  background: var(--ink-red);
+  color: white;
+}
+
+/* ========== 其他元素 ========== */
+.hint {
+  position: absolute;
+  bottom: 12%;
+  width: 100%;
+  text-align: center;
+  color: #8e8e93;
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  animation: blink 2s infinite;
+  z-index: 15;
+  font-family: sans-serif;
+}
+#firework-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  mix-blend-mode: darken;
+}
+.visitor-counter {
+  position: fixed;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  font-family: sans-serif;
+  color: #8e8e93;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+.author-info {
+  position: fixed;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  color: #8e8e93;
+  font-size: 0.7rem;
+  font-family: "Times New Roman", serif;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* ========== 移动端响应式适配 ========== */
+@media (max-width: 768px) {
+  /* 首页书法布局调整 */
+  .calligraphy-box {
+    width: 220px;
+    height: 380px;
+    margin: 0 auto;
+    transform: translateY(-80px) scale(1);
+    position: relative;
+    display: block;
+  }
+
+  .char {
+    font-size: 6.5rem !important;
+    line-height: 1;
+    filter: drop-shadow(0 0 10px rgba(178, 34, 34, 0.15));
+  }
+
+  .char-xin {
+    top: 0;
+    right: 25px;
+    z-index: 4;
+  }
+
+  .char-chun {
+    top: 85px;
+    right: 5px;
+    z-index: 2;
+  }
+
+  .char-kuai {
+    top: 155px;
+    left: 25px;
+    z-index: 3;
+  }
+
+  .char-le {
+    top: 245px;
+    left: 50%;
+    transform: translateX(-40%);
+    z-index: 1;
+  }
+
+  /* 印章修复：强制红色背景与居中 */
+  .seal-container {
+    width: 35px;
+    height: 75px;
+    left: -20px;
+    top: 200px;
+    z-index: 10;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .seal-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    fill: #9c1a1a !important;
+    display: block !important;
+    filter: none !important;
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2)) !important;
+  }
+
+  .seal-text {
+    position: relative;
+    z-index: 11;
+    color: var(--paper-color) !important;
+    font-size: 0.75rem;
+    line-height: 1.1;
+    text-align: center;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    padding-top: 0;
+    margin: 0;
+  }
+
+  /* 许愿墙卡片防重叠 */
+  #view-wall {
+    padding-bottom: 120px;
+    overflow-y: auto;
+  }
+
+  #message-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 15px !important;
+    width: 94% !important;
+    height: auto !important;
+    max-height: 60vh !important;
+    padding: 20px 10px !important;
+    margin: 10px auto !important;
+    align-items: start;
+  }
+
+  .message-card {
+    aspect-ratio: auto !important;
+    min-height: 140px;
+    height: auto !important;
+    padding: 15px 10px !important;
+    position: relative !important;
+    margin: 0 !important;
+    font-size: 1rem;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    transform: rotate(0deg) !important;
+  }
+
+  /* 底部元素位置调整 */
+  .wish-button {
+    bottom: 24%;
+    padding: 8px 30px;
+    font-size: 1.3rem;
+  }
+
+  .write-btn {
+    margin: 25px 0;
+    padding: 12px 45px;
+    position: relative;
+    z-index: 100;
+  }
+
+  .visitor-counter {
+    bottom: 40px;
+    background: rgba(244, 232, 209, 0.9);
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+  }
+
+  .author-info {
+    bottom: 15px;
+    font-size: 0.65rem;
+  }
+
+  .hint {
+    bottom: 18%;
+    font-size: 0.8rem;
+  }
+}
+
+/* ========== 极小屏幕适配 ========== */
+@media (max-width: 360px) {
+  .char {
+    font-size: 5.5rem !important;
+  }
+  .calligraphy-box {
+    transform: translateY(-60px) scale(0.9);
+  }
+  .char-chun {
+    top: 75px;
+  }
+  .char-kuai {
+    top: 135px;
+  }
+  .char-le {
+    top: 215px;
+  }
+  #message-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+}

@@ -1,0 +1,165 @@
+<!-- ========== 根节点：HTML文档 ========== -->
+<!doctype html>
+<html lang="zh-CN">
+  <!-- ========== 头部区域：元数据与资源引用 ========== -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>2026 丙午马年 · 新春快乐</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script>
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <!-- ========== 主体内容 ========== -->
+  <body>
+    <!-- SVG滤镜定义：为印章添加粗糙质感效果 -->
+    <svg style="display: none">
+      <defs>
+        <filter id="roughness">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.04"
+            numOctaves="2"
+            result="noise"
+          />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" />
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- 烟花动画画布 -->
+    <canvas id="firework-canvas"></canvas>
+
+    <!-- ========== 视图1：首页（书法展示） ========== -->
+    <main id="view-home" class="view active">
+      <div class="main-container">
+        <div class="calligraphy-box">
+          <!-- 印章容器 -->
+          <div class="seal-container">
+            <svg
+              class="seal-bg"
+              viewBox="0 0 100 200"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M15,10 C30,5 70,8 85,15 C95,25 90,60 92,100 C94,140 98,175 80,185 C60,195 30,192 15,180 C5,170 8,130 6,100 C4,70 5,25 15,10 Z"
+              />
+            </svg>
+            <div class="seal-text">丙午马年</div>
+          </div>
+          <!-- 书法四字 -->
+          <div class="char char-xin">新</div>
+          <div class="char char-chun">春</div>
+          <div class="char char-kuai">快</div>
+          <div class="char char-le">乐</div>
+        </div>
+      </div>
+      <!-- 许愿入口按钮 -->
+      <button
+        class="wish-button"
+        onclick="
+          event.stopPropagation();
+          navigateTo('wall');
+        "
+      >
+        许愿
+      </button>
+      <!-- 交互提示 -->
+      <div class="hint">--点击屏幕 绽放烟花--</div>
+    </main>
+
+    <!-- ========== 视图2：许愿墙 ========== -->
+    <section id="view-wall" class="view hidden" style="display: none">
+      <div class="wall-header">
+        <!-- 返回首页按钮 -->
+        <button
+          class="back-btn"
+          onclick="
+            event.stopPropagation();
+            navigateTo('home');
+          "
+        >
+          返回
+        </button>
+        <h2 class="wall-title">许愿</h2>
+      </div>
+      <!-- 许愿卡片网格容器 -->
+      <div id="message-grid"></div>
+      <!-- 打开许愿弹窗按钮 -->
+      <button
+        class="write-btn"
+        onclick="
+          event.stopPropagation();
+          toggleModal(true);
+        "
+      >
+        去许愿
+      </button>
+    </section>
+
+    <!-- ========== 模态弹窗：许愿表单 ========== -->
+    <div id="wish-modal" class="modal">
+      <div class="modal-content">
+        <h3>提交愿望</h3>
+        <!-- 愿望内容输入 -->
+        <textarea
+          id="input-content"
+          placeholder="写下你的愿望 (50字以内)"
+          maxlength="50"
+        ></textarea>
+        <!-- 署名输入 -->
+        <input
+          type="text"
+          id="input-name"
+          placeholder="署名 (10字以内)"
+          maxlength="10"
+        />
+        <!-- 匿名选项 -->
+        <label class="anon-label">
+          <input type="checkbox" id="input-anon" /> 匿名发布
+        </label>
+        <!-- 操作按钮组 -->
+        <div class="modal-btns">
+          <button
+            onclick="
+              event.stopPropagation();
+              submitWish();
+            "
+          >
+            寄出
+          </button>
+          <button
+            class="cancel"
+            onclick="
+              event.stopPropagation();
+              toggleModal(false);
+            "
+          >
+            取消
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 访客统计 -->
+    <div class="visitor-counter">
+      烟花点亮人数 <span id="busuanzi_value_site_pv">--</span>
+    </div>
+
+    <!-- 作者信息 -->
+    <div class="author-info">Made by Chengxue Han,2026.2</div>
+
+    <!-- JavaScript主逻辑 -->
+    <script src="javascript/main.js"></script>
+  </body>
+</html>

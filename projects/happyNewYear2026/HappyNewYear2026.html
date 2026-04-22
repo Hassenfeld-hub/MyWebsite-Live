@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2026 新年快乐</title>
+    <!-- 引入不蒜子计数脚本 -->
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Permanent+Marker&display=swap');
+
+        :root {
+            --paper-color: #fcfcf7;
+            --c-red: #ff3b30;
+            --c-blue: #007aff;
+            --c-yellow: #ffcc00;
+            --c-orange: #ff9500;
+            --c-gray: #8e8e93;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--paper-color);
+            background-image: 
+                radial-gradient(#d0d0d0 1px, transparent 0),
+                radial-gradient(#d0d0d0 1px, transparent 0);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            font-family: 'ZCOOL KuaiLe', cursive;
+            cursor: crosshair;
+            touch-action: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- 核心修复：蜡笔滤镜 + iOS 防抖动 --- */
+        .crayon-effect {
+            filter: url('#crayon-texture');
+            /* 开启硬件加速，防止 iOS 上因重绘导致的抖动 */
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            /* 确保图层独立 */
+            will-change: transform; 
+        }
+
+        .container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            padding-bottom: 60px;
+        }
+
+        /* 巨大的中文标题 */
+        .big-text {
+            font-size: 22vw; 
+            line-height: 0.85; 
+            color: var(--c-red);
+            text-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        @media (min-width: 800px) and (min-aspect-ratio: 1/1) {
+            .big-text { font-size: 35vh; }
+        }
+
+        /* 2026 贴纸 */
+        .year-sticker {
+            font-family: 'Permanent Marker', cursive;
+            font-size: clamp(2rem, 6vw, 4rem);
+            color: white;
+            background-color: var(--c-blue);
+            padding: 5px 30px;
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            /* 移除 float 动画的 transform，改用 margin 动画，避免触发父级重绘 */
+            transform: rotate(-6deg); 
+            z-index: 2;
+            margin: -20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: sticker-float 3s ease-in-out infinite;
+        }
+
+        /* 优化后的浮动动画：只动 translateY，不动 rotate，减少抖动源 */
+        @keyframes sticker-float {
+            0%, 100% { transform: rotate(-6deg) translateY(0); }
+            50% { transform: rotate(-6deg) translateY(-8px); }
+        }
+
+        /* 底部英文 */
+        .footer-en {
+            margin-top: 2vh;
+            font-family: 'Permanent Marker', cursive;
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            color: var(--c-orange);
+            letter-spacing: 2px;
+            transform: rotate(2deg);
+        }
+
+        /* 交互提示语 */
+        .hint-text {
+            margin-top: 2vh;
+            font-size: 0.8rem;
+            color: var(--c-gray);
+            opacity: 0.7;
+            animation: blink 2s infinite;
+        }
+
+        /* --- 底部固定区域 --- */
+        .footer-fixed {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .signature {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 0.7rem;
+            color: var(--c-gray);
+            opacity: 0.6;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        /* 浏览量样式 */
+        .visit-count {
+            font-family: 'ZCOOL KuaiLe', cursive; /* 改用中文适配字体 */
+            font-size: 0.7rem; 
+            color: var(--c-gray);
+            opacity: 0.5;
+        }
+
+        /* 烟花容器 */
+        #firework-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            width: 10px;
+            height: 10px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <svg style="display: none;">
+        <defs>
+            <filter id="crayon-texture">
+                <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
+    <div id="firework-canvas" class="crayon-effect"></div>
+
+    <div class="container">
+        <div class="big-text crayon-effect">新年</div>
+        <div class="year-sticker crayon-effect">2026</div>
+        <div class="big-text crayon-effect">快乐</div>
+        <div class="footer-en crayon-effect">HAPPY NEW YEAR</div>
+        
+        <div class="hint-text">👇 点击屏幕绽放烟花 👇</div>
+    </div>
+    
+    <!-- 底部固定信息 -->
+    <div class="footer-fixed">
+        <div class="signature">Made by Chengxue Han, 2025.12.31</div>
+        
+        <!-- 浏览量统计容器 -->
+        <div class="visit-count" id="busuanzi_container_site_pv" style="display:none">
+            🎆 烟花点亮人数: <span id="busuanzi_value_site_pv"></span>
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('firework-canvas');
+        const colors = ['#ff3b30', '#ff9500', '#ffcc00', '#4cd964', '#5ac8fa', '#007aff', '#5856d6', '#ff2d55'];
+        const GRAVITY = 0.08;
+        const FRICTION = 0.96;
+        let particles = [];
+
+        class Particle {
+            constructor(x, y, color) {
+                this.element = document.createElement('div');
+                this.element.classList.add('particle');
+                const size = Math.random() * 15 + 8;
+                this.element.style.width = `${size}px`;
+                this.element.style.height = `${size}px`;
+                this.element.style.backgroundColor = color;
+                
+                this.x = x; 
+                this.y = y;
+                
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 7 + 2;
+                this.vx = Math.cos(angle) * velocity;
+                this.vy = Math.sin(angle) * velocity;
+                this.life = 1.0;
+                this.decay = Math.random() * 0.02 + 0.01;
+                
+                container.appendChild(this.element);
+            }
+            update() {
+                this.vx *= FRICTION;
+                this.vy *= FRICTION;
+                this.vy += GRAVITY;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+                this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
+                this.element.style.opacity = this.life;
+            }
+        }
+
+        function animate() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                if (p.life <= 0) {
+                    p.element.remove();
+                    particles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function createFirework(x, y) {
+            const mainColor = Math.random() > 0.3 ? colors[Math.floor(Math.random() * colors.length)] : null;
+            for (let i = 0; i < 35; i++) {
+                const color = mainColor || colors[Math.floor(Math.random() * colors.length)];
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        document.addEventListener('pointerdown', (e) => {
+            createFirework(e.clientX, e.clientY);
+        });
+
+        setInterval(() => {
+            createFirework(
+                Math.random() * window.innerWidth, 
+                Math.random() * (window.innerHeight * 0.7)
+            );
+        }, 1200);
+
+        animate();
+    </script>
+</body>
+</html>
